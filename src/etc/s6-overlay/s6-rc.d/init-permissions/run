@@ -2,6 +2,9 @@
 # shellcheck shell=bash
 
 # permissions
+chown disty:disty \
+    /config/log
+
 chown -R disty:disty \
     /var/lib/nginx \
     /var/tmp/nginx
@@ -13,7 +16,8 @@ chown -R disty:disty \
 
 chown -R disty:disty \
     /config/www \
-    /config/log
+    /config/log/nginx \
+    /config/log/php
 
 chmod -R g+w \
     /config/nginx
