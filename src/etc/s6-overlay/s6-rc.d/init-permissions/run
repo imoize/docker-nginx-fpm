@@ -1,6 +1,19 @@
 #!/command/with-contenv bash
 # shellcheck shell=bash
 
+# create logs file
+if [[ ! -f "/config/log/nginx/access.log" ]]; then
+    touch /config/log/nginx/access.log
+fi
+
+if [[ ! -f "/config/log/nginx/error.log" ]]; then
+    touch /config/log/nginx/error.log
+fi
+
+if [[ ! -f "/config/log/php/error.log" ]]; then
+    touch /config/log/php/error.log
+fi
+
 # permissions
 chown disty:disty \
     /config/log
