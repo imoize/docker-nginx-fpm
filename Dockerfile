@@ -10,12 +10,12 @@ ENV PHP_VERSION="$PHP_VERSION"
 # install packages
 RUN \
   apk update && apk upgrade && apk add --no-cache \
-    git \
-    nano \
     nginx \
     openssl \
     logrotate \
     apache2-utils \
+    nginx-mod-http-brotli \
+    nginx-mod-http-headers-more \
     php${PHP_VERSION} \
     php${PHP_VERSION}-ctype \
     php${PHP_VERSION}-curl \
