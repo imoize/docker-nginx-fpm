@@ -7,6 +7,13 @@ server {
 
     server_name _;
 
+    include /config/nginx/conf.d/brotli.conf;
+    include /config/nginx/conf.d/block-exploits.conf;
+    include /config/nginx/conf.d/tls-ciphers.conf;
+    
+    # set access log default to "/dev/stdout"
+    #access_log /config/log/nginx/access.log;
+
     set $root /app/www/public;
     if (!-d /app/www/public) {
         set $root /config/www;
