@@ -5,7 +5,7 @@
 mkdir -p \
     /config/{ssl,php,www} \
     /config/log/{nginx,php} \
-    /config/nginx/site-confs \
+    /config/nginx/{site-confs,samples,conf.d} \
     /run \
     /var/lib/nginx/tmp/client_body \
     /var/tmp/nginx

@@ -2,20 +2,14 @@
 # shellcheck shell=bash
 
 # remove old samples
-find /config/nginx/ \
+find /config/nginx/samples \
     -name "*.conf.sample" \
     -type f \
     -delete
 
 # copy new samples
-find /defaults/nginx/ \
+find /defaults/nginx/samples \
     -maxdepth 1 \
     -name "*.conf.sample" \
     -type f \
-    -exec cp "{}" /config/nginx/ +
-
-find /defaults/nginx/site-confs/ \
-    -maxdepth 1 \
-    -name "*.conf.sample" \
-    -type f \
-    -exec cp "{}" /config/nginx/site-confs/ +
+    -exec cp "{}" /config/nginx/samples +

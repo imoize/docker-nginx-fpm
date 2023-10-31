@@ -3,26 +3,32 @@
 
 # copy nginx config files if they don't exist
 if [[ ! -f /config/nginx/nginx.conf ]]; then
-    echo "==> Create nginx.conf..."
-    cp /defaults/nginx/nginx.conf.sample /config/nginx/nginx.conf
-else 
-    echo "==> Nginx configuration file "OK""
+    cp /defaults/nginx/samples/nginx.conf.sample /config/nginx/nginx.conf
 fi
 
 # copy default config files if they don't exist
 if [[ ! -f /config/nginx/site-confs/default.conf ]]; then
-    echo "==> Create default.conf..."
-    cp /defaults/nginx/site-confs/default.conf.sample /config/nginx/site-confs/default.conf
-else
-    echo "==> Nginx Virtual configuration file "OK""
+    cp /defaults/nginx/samples/default.conf.sample /config/nginx/site-confs/default.conf
 fi
 
-# copy ssl config files if they don't exist
-if [[ ! -f /config/nginx/ssl.conf ]]; then
-    echo "==> Create ssl.conf..."
-    cp /defaults/nginx/ssl.conf.sample /config/nginx/ssl.conf
-else
-    echo "==> Ssl configuration file "OK""
+# copy tls-ciphers config files if they don't exist
+if [[ ! -f /config/nginx/conf.d/tls-ciphers.conf ]]; then
+    cp /defaults/nginx/samples/tls-ciphers.conf.sample /config/nginx/conf.d/tls-ciphers.conf
+fi
+
+# copy block-exploits config files if they don't exist
+if [[ ! -f /config/nginx/conf.d/block-exploits.conf ]]; then
+    cp /defaults/nginx/samples/block-exploits.conf.sample /config/nginx/conf.d/block-exploits.conf
+fi
+
+# copy brotli config files if they don't exist
+if [[ ! -f /config/nginx/conf.d/brotli.conf ]]; then
+    cp /defaults/nginx/samples/brotli.conf.sample /config/nginx/conf.d/brotli.conf
+fi
+
+# copy hsts config files if they don't exist
+if [[ ! -f /config/nginx/conf.d/hsts.conf ]]; then
+    cp /defaults/nginx/samples/hsts.conf.sample /config/nginx/conf.d/hsts.conf
 fi
 
 # copy index.html if no index file exists
@@ -46,8 +52,8 @@ if ! grep -q 'PARAMETERS' "/config/nginx/dhparams.pem"; then
 fi
 
 # Set resolver, ignore ipv6 addresses
-touch /config/nginx/resolver.conf
-if ! grep -q 'resolver' /config/nginx/resolver.conf; then
+touch /config/nginx/conf.d/resolver.conf
+if ! grep -q 'resolver' /config/nginx/conf.d/resolver.conf; then
     RESOLVERRAW=$(awk 'BEGIN{ORS=" "} $1=="nameserver" {print $2}' /etc/resolv.conf)
     for i in ${RESOLVERRAW}; do
         if [[ "$(awk -F ':' '{print NF-1}' <<<"${i}")" -le 2 ]]; then
@@ -59,13 +65,13 @@ if ! grep -q 'resolver' /config/nginx/resolver.conf; then
     fi
     echo "==> Setting resolver to ${RESOLVER}..."
     RESOLVEROUTPUT="# This file is auto-generated only on first start, based on the container's /etc/resolv.conf file. Feel free to modify it as you wish.\n\nresolver ${RESOLVER} valid=30s;"
-    echo -e "${RESOLVEROUTPUT}" >/config/nginx/resolver.conf
+    echo -e "${RESOLVEROUTPUT}" >/config/nginx/conf.d/resolver.conf
 fi
 
 # Set worker_processes
-touch /config/nginx/worker_processes.conf
-if ! grep -q 'worker_processes' /config/nginx/worker_processes.conf; then
+touch /config/nginx/conf.d/worker_processes.conf
+if ! grep -q 'worker_processes' /config/nginx/conf.d/worker_processes.conf; then
     WORKER_PROCESSES=$(nproc)
     echo "==> Setting worker_processes to ${WORKER_PROCESSES}"
-    echo -e "# This file is auto-generated only on first start, based on the cpu cores detected. Feel free to change it to any other number or to auto to let nginx handle it automatically.\n\nworker_processes ${WORKER_PROCESSES};" >/config/nginx/worker_processes.conf
+    echo -e "# This file is auto-generated only on first start, based on the cpu cores detected. Feel free to change it to any other number or to auto to let nginx handle it automatically.\n\nworker_processes ${WORKER_PROCESSES};" >/config/nginx/conf.d/worker_processes.conf
 fi
