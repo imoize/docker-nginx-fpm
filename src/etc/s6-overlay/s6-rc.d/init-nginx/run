@@ -1,35 +1,36 @@
 #!/command/with-contenv bash
 # shellcheck shell=bash
 
-# copy nginx config files if they don't exist
-if [[ ! -f /config/nginx/nginx.conf ]]; then
-    cp /defaults/nginx/samples/nginx.conf.sample /config/nginx/nginx.conf
-fi
+# copy nginx config
+copy_conf_if_not_exist() {
+    source_file="$1"
+    target_file="$2"
 
-# copy default config files if they don't exist
-if [[ ! -f /config/nginx/site-confs/default.conf ]]; then
-    cp /defaults/nginx/samples/default.conf.sample /config/nginx/site-confs/default.conf
-fi
+    if [[ ! -f "$source_file" ]]; then
+        echo "==> Source file does not exist: ${source_file}"
+        return 1
+    fi
 
-# copy tls-ciphers config files if they don't exist
-if [[ ! -f /config/nginx/conf.d/tls-ciphers.conf ]]; then
-    cp /defaults/nginx/samples/tls-ciphers.conf.sample /config/nginx/conf.d/tls-ciphers.conf
-fi
+    if [[ ! -f "$target_file" ]]; then
+        echo "==> Copying ${source_file} to ${target_file}..."
+        cp "$source_file" "$target_file"
+    fi
+}
 
-# copy block-exploits config files if they don't exist
-if [[ ! -f /config/nginx/conf.d/block-exploits.conf ]]; then
-    cp /defaults/nginx/samples/block-exploits.conf.sample /config/nginx/conf.d/block-exploits.conf
-fi
+# list of nginx config files to copy
+files_to_copy=(
+    "/defaults/nginx/samples/nginx.conf.sample:/config/nginx/nginx.conf"
+    "/defaults/nginx/samples/default.conf.sample:/config/nginx/site-confs/default.conf"
+    "/defaults/nginx/samples/tls-ciphers.conf.sample:/config/nginx/conf.d/tls-ciphers.conf"
+    "/defaults/nginx/samples/block-exploits.conf.sample:/config/nginx/conf.d/block-exploits.conf"
+    "/defaults/nginx/samples/brotli.conf.sample:/config/nginx/conf.d/brotli.conf"
+    "/defaults/nginx/samples/hsts.conf.sample:/config/nginx/conf.d/hsts.conf"
+)
 
-# copy brotli config files if they don't exist
-if [[ ! -f /config/nginx/conf.d/brotli.conf ]]; then
-    cp /defaults/nginx/samples/brotli.conf.sample /config/nginx/conf.d/brotli.conf
-fi
-
-# copy hsts config files if they don't exist
-if [[ ! -f /config/nginx/conf.d/hsts.conf ]]; then
-    cp /defaults/nginx/samples/hsts.conf.sample /config/nginx/conf.d/hsts.conf
-fi
+# copy nginx config files
+for file_mapping in "${files_to_copy[@]}"; do
+    copy_conf_if_not_exist ${file_mapping/:/ }
+done
 
 # copy index.html if no index file exists
 INDEX_EXISTS=false
@@ -51,7 +52,7 @@ if ! grep -q 'PARAMETERS' "/config/nginx/dhparams.pem"; then
     curl -o /config/nginx/dhparams.pem -L "https://ssl-config.mozilla.org/ffdhe4096.txt"
 fi
 
-# Set resolver, ignore ipv6 addresses
+# set resolver, ignore ipv6 addresses
 touch /config/nginx/conf.d/resolver.conf
 if ! grep -q 'resolver' /config/nginx/conf.d/resolver.conf; then
     RESOLVERRAW=$(awk 'BEGIN{ORS=" "} $1=="nameserver" {print $2}' /etc/resolv.conf)
@@ -63,15 +64,15 @@ if ! grep -q 'resolver' /config/nginx/conf.d/resolver.conf; then
     if [[ -z "${RESOLVER}" ]]; then
         RESOLVER="127.0.0.11"
     fi
-    echo "==> Setting resolver to ${RESOLVER}..."
+    echo "==> Set resolver to ${RESOLVER}"
     RESOLVEROUTPUT="# This file is auto-generated only on first start, based on the container's /etc/resolv.conf file. Feel free to modify it as you wish.\n\nresolver ${RESOLVER} valid=30s;"
     echo -e "${RESOLVEROUTPUT}" >/config/nginx/conf.d/resolver.conf
 fi
 
-# Set worker_processes
+# set worker_processes
 touch /config/nginx/conf.d/worker_processes.conf
 if ! grep -q 'worker_processes' /config/nginx/conf.d/worker_processes.conf; then
     WORKER_PROCESSES=$(nproc)
-    echo "==> Setting worker_processes to ${WORKER_PROCESSES}"
+    echo "==> Set worker_processes to ${WORKER_PROCESSES}"
     echo -e "# This file is auto-generated only on first start, based on the cpu cores detected. Feel free to change it to any other number or to auto to let nginx handle it automatically.\n\nworker_processes ${WORKER_PROCESSES};" >/config/nginx/conf.d/worker_processes.conf
 fi
