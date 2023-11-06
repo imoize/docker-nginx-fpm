@@ -1,7 +1,13 @@
 #!/command/with-contenv bash
 # shellcheck shell=bash
 
+# Load Generic Libraries
+. /defaults/scripts/liblog.sh
+
+echo "$info ==> -- Starting PHP setup --"
+
 # copy local php.ini if it doesn't exist
+echo "$info ==> Setup PHP configuration..."
 if [[ ! -f /config/php/php-local.ini ]]; then
     cp /defaults/php/php-local.ini /config/php/php-local.ini
     sed -i \
