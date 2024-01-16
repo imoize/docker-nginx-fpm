@@ -9,25 +9,34 @@ ENV PHP_VERSION="$PHP_VERSION"
 
 # install packages
 RUN \
-  apk update && apk upgrade && apk add --no-cache \
-    nginx \
-    openssl \
-    logrotate \
+apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
     apache2-utils \
-    nginx-mod-http-brotli \
-    nginx-mod-http-headers-more \
+    libavif \
+    icu-libs \
+    logrotate \
+    nginx=1.24.0-r14 \
+    nginx-mod-http-brotli=1.24.0-r14 \
+    nginx-mod-http-headers-more=1.24.0-r14 \
+    openssl && \
+  apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     php${PHP_VERSION} \
+    php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-ctype \
     php${PHP_VERSION}-curl \
     php${PHP_VERSION}-fileinfo \
     php${PHP_VERSION}-fpm \
+    php${PHP_VERSION}-gd \
     php${PHP_VERSION}-iconv \
+    php${PHP_VERSION}-intl \
     php${PHP_VERSION}-json \
     php${PHP_VERSION}-mbstring \
     php${PHP_VERSION}-openssl \
+    php${PHP_VERSION}-pdo \
+    php${PHP_VERSION}-pdo_mysql \
     php${PHP_VERSION}-phar \
     php${PHP_VERSION}-session \
     php${PHP_VERSION}-simplexml \
+    php${PHP_VERSION}-tokenizer \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-xmlwriter \
     php${PHP_VERSION}-zip \
