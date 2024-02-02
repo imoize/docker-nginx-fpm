@@ -9,14 +9,14 @@ ENV PHP_VERSION="$PHP_VERSION"
 
 # install packages
 RUN \
-apk update && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+apk update && apk add --no-cache \
     apache2-utils \
     libavif \
     icu-libs \
     logrotate \
-    nginx=1.24.0-r14 \
-    nginx-mod-http-brotli=1.24.0-r14 \
-    nginx-mod-http-headers-more=1.24.0-r14 \
+    nginx \
+    nginx-mod-http-brotli \
+    nginx-mod-http-headers-more \
     openssl && \
 apk update && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
     php${PHP_VERSION} \
