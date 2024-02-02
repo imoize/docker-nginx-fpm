@@ -68,6 +68,16 @@ docker run -d \
 ```
 
 Access your web server in the browser by navigating to http://ip-address:8080 or https://ip-address:9443
+
+## Available environment variables:
+
+| Name                      | Description                                            | Default Value |
+| ------------------------- | ------------------------------------------------------ | ------------- |
+| PUID                      | User UID                                               |               |
+| PGID                      | Group GID                                              |               |
+| TZ                        | Specify a timezone see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List).       | UTC          |
+| S6_VERBOSITY              | Controls the verbosity of s6-rc. See [this.](https://github.com/just-containers/s6-overlay?tab=readme-ov-file#customizing-s6-overlay-behaviour)    | 1             |
+
 ## Configuration
 
 ### Environment variables
@@ -80,7 +90,7 @@ When you start the Nginx image, you can adjust the configuration of the instance
 nginx:
 ...
 environment:
-- PUID=1001
+  - PUID=1001
 ...
 ```
 
@@ -91,16 +101,6 @@ docker run -d \
 -e PUID=1001 \
 imoize/nginx-fpm:latest
 ```
-
-### Available environment variables:
-
-- `PUID=...` for UserID.
-- `PGID=...` for GroupID.
-- `TZ=...` specify a timezone see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List). Default: **UTC**
-- `S6_VERBOSITY=...` controls the verbosity of s6-rc. Default: **1**
-    * 0 will only print errors.
-    * 1 will only print warnings and errors.
-    * 2 is normally verbose: it will list the service start and stop operations.
 
 ### PHP configuration
 
